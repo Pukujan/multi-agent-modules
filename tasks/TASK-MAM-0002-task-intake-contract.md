@@ -43,3 +43,26 @@ A genuinely new session can recover its repository, task, role, authority, check
 ## Next action
 
 Complete the corrected schema and human contract, validate them, record final acceptance on issue #2, then implement and test the resolver.
+
+### 2026-09-27 04:42:46 UTC — /root (Codex project authority)
+
+<!-- continuity:checkpoint {"agent":"/root (Codex project authority)","blocked":["No resolver or property tests yet. Full runtime and three observed fresh-session runs remain outstanding."],"changed":["PROJECT.md, checkpoints/CURRENT.md, HANDOFF.md, proposals/0001-task-intake-and-urgent-owner-priority.md, proposals/task-intake.schema.json, tasks/TASK-MAM-0002-task-intake-contract.md"],"completed":["Corrected the intake schema and precedence proposal; validated the draft-2020-12 schema and structural rejection cases; updated PROJECT, CURRENT, HANDOFF, and the task projection."],"decisions":["The precedence is accepted in principle for correction. The v1 schema is not yet finally accepted; record that decision before implementing the resolver. The three-device cold-start acceptance remains outstanding."],"evidence":["Issue #2 is OPEN; reviewed draft PR #3 at source revision 45410fd6596849acd7326a23bf04eab3ba185b56. continuity preflight=TARGET_VALID; continuity validate=VALID; schema meta-validation, complete baseline record, and negative structural cases=PASS."],"next_action":"Publish this design-only checkpoint, then record final acceptance on issue #2 before implementing the resolver.","protocol_version":"0.1.0-draft","schema":"project-continuity.checkpoint.v1","task_id":"MAM-0002","timestamp":"2026-09-27T04:42:46Z"} -->
+<!-- continuity:checkpoint-operation {"payload_sha256":"df41ebcef55ff3375f9c3fe3e384b42f1ca2229422640b40125be3f17902669e","request_id":"23a1ab3c6ad44c8fa5b6da0188c574e6","schema":"project-continuity.checkpoint-operation.v1","task_id":"MAM-0002"} -->
+
+Completed:
+- Corrected the intake schema and precedence proposal; validated the draft-2020-12 schema and structural rejection cases; updated PROJECT, CURRENT, HANDOFF, and the task projection.
+
+Evidence:
+- Issue #2 is OPEN; reviewed draft PR #3 at source revision 45410fd6596849acd7326a23bf04eab3ba185b56. continuity preflight=TARGET_VALID; continuity validate=VALID; schema meta-validation, complete baseline record, and negative structural cases=PASS.
+
+Decisions:
+- The precedence is accepted in principle for correction. The v1 schema is not yet finally accepted; record that decision before implementing the resolver. The three-device cold-start acceptance remains outstanding.
+
+Changed:
+- PROJECT.md, checkpoints/CURRENT.md, HANDOFF.md, proposals/0001-task-intake-and-urgent-owner-priority.md, proposals/task-intake.schema.json, tasks/TASK-MAM-0002-task-intake-contract.md
+
+Blocked/uncertain:
+- No resolver or property tests yet. Full runtime and three observed fresh-session runs remain outstanding.
+
+Next:
+- Publish this design-only checkpoint, then record final acceptance on issue #2 before implementing the resolver.
