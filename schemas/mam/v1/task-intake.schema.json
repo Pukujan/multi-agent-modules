@@ -1,0 +1,338 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Pukujan/multi-agent-modules/schemas/mam/v1/task-intake.schema.json",
+  "title": "MAM task intake contract",
+  "description": "Accepted version 1.2 contract for issue #2. Every start, resume, handoff, or stop carries explicit target, ownership, role, checkpoint, automation, and authorization state. Goal pause and scheduled-control stop are distinct. Every prior same-lane session is listed. Values that report observations are claims until matched against separately verified caller facts. Cross-field routing rules are enforced by runtime/task_intake.py, not by JSON Schema alone.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "intake_id",
+    "recorded_at",
+    "target",
+    "lane",
+    "requester",
+    "action",
+    "task",
+    "checkpoint",
+    "automation",
+    "authorization"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "mam.task-intake.v1.2",
+      "description": "The resolver must refuse an unknown schema version rather than guess or migrate it."
+    },
+    "intake_id": {
+      "type": "string",
+      "pattern": "^intake:[a-z0-9][a-z0-9._-]{0,127}$"
+    },
+    "recorded_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["canonical_repo", "remote_verified", "checkout_role", "issue_ref"],
+      "properties": {
+        "canonical_repo": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*/[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "remote_verified": {
+          "type": "boolean",
+          "description": "Claim that the checkout remote was compared with canonical_repo. The resolver caller must independently verify this fact."
+        },
+        "checkout_role": {
+          "enum": ["canonical", "collision", "unresolved"]
+        },
+        "issue_ref": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*/[A-Za-z0-9][A-Za-z0-9._-]*#[1-9][0-9]*$"
+        }
+      }
+    },
+    "lane": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "agent_alias", "replacements"],
+      "properties": {
+        "provider": {
+          "type": "string",
+          "minLength": 1
+        },
+        "agent_alias": {
+          "type": "string",
+          "minLength": 1
+        },
+        "replacements": {
+          "description": "Every older session in this provider lane assigned to this repository that the caller verified. Empty array means none exist.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/replacement" }
+        }
+      }
+    },
+    "requester": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authority", "delegation_ref", "urgent"],
+      "properties": {
+        "authority": {
+          "enum": ["owner", "owner_delegate", "arbiter", "worker", "unknown"]
+        },
+        "delegation_ref": {
+          "type": ["string", "null"],
+          "minLength": 1
+        },
+        "urgent": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "authority": { "const": "owner_delegate" } } },
+          "then": { "properties": { "delegation_ref": { "type": "string", "minLength": 1 } } }
+        }
+      ]
+    },
+    "action": {
+      "enum": ["start", "resume", "handoff", "stop"]
+    },
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "issue_owner_agent_alias",
+        "owner_agent_alias",
+        "role",
+        "scope",
+        "priority",
+        "depends_on"
+      ],
+      "properties": {
+        "issue_owner_agent_alias": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner_agent_alias": {
+          "type": "string",
+          "minLength": 1
+        },
+        "role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "priority": {
+          "enum": ["P0", "P1", "P2", "P3"]
+        },
+        "depends_on": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        }
+      }
+    },
+    "checkpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "commit", "issue_ref"],
+      "properties": {
+        "state": {
+          "enum": ["none", "published", "unavailable"]
+        },
+        "commit": {
+          "type": ["string", "null"],
+          "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+        },
+        "issue_ref": {
+          "type": ["string", "null"],
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*/[A-Za-z0-9][A-Za-z0-9._-]*#[1-9][0-9]*$"
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "state": { "const": "published" } } },
+          "then": {
+            "properties": {
+              "commit": { "type": "string", "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$" },
+              "issue_ref": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*/[A-Za-z0-9][A-Za-z0-9._-]*#[1-9][0-9]*$" }
+            }
+          },
+          "else": {
+            "properties": { "commit": { "type": "null" } }
+          }
+        }
+      ]
+    },
+    "automation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["goals", "scheduled_jobs", "watchdogs"],
+      "properties": {
+        "goals": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/goalItem" }
+        },
+        "scheduled_jobs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/automationItem" }
+        },
+        "watchdogs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/automationItem" }
+        }
+      }
+    },
+    "authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["may_write_repo", "may_stop_own_automation", "may_stop_other_lanes"],
+      "properties": {
+        "may_write_repo": { "type": "boolean" },
+        "may_stop_own_automation": { "type": "boolean" },
+        "may_stop_other_lanes": {
+          "const": false,
+          "description": "Always false. No agent may stop or replace another provider/runtime lane."
+        }
+      }
+    }
+  },
+  "$defs": {
+    "replacement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "session_ref",
+        "provider",
+        "agent_alias",
+        "session_reachable",
+        "checkpoint_commit",
+        "checkpoint_published",
+        "stop_verified",
+        "write_authority_fenced"
+      ],
+      "properties": {
+        "session_ref": {
+          "type": "string",
+          "pattern": "^https://github\\.com/[^/]+/[^/]+/issues/[1-9][0-9]*(?:#issuecomment-[1-9][0-9]*)?$"
+        },
+        "provider": { "type": "string", "minLength": 1 },
+        "agent_alias": { "type": "string", "minLength": 1 },
+        "session_reachable": { "type": "boolean" },
+        "checkpoint_commit": {
+          "type": "string",
+          "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+        },
+        "checkpoint_published": { "const": true },
+        "stop_verified": { "const": true },
+        "write_authority_fenced": { "type": "boolean" }
+      }
+    },
+    "goalItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "state", "stop_action", "restart_action", "verified"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "state": { "enum": ["active", "paused", "not_installed", "unavailable", "unknown"] },
+        "stop_action": { "type": ["string", "null"] },
+        "restart_action": { "type": ["string", "null"] },
+        "verified": { "type": ["boolean", "null"] }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "state": { "enum": ["active", "paused"] } } },
+          "then": {
+            "properties": {
+              "stop_action": { "type": "string", "minLength": 1 },
+              "restart_action": { "type": "string", "minLength": 1 },
+              "verified": { "const": true }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "state": { "const": "not_installed" } } },
+          "then": {
+            "properties": {
+              "stop_action": { "type": "null" },
+              "restart_action": { "type": "null" },
+              "verified": { "const": true }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "state": { "enum": ["unavailable", "unknown"] } } },
+          "then": { "properties": { "verified": { "const": null } } }
+        }
+      ]
+    },
+    "automationItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "state", "stop_action", "restart_action", "verified"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "state": {
+          "enum": ["active", "stopped", "not_installed", "unavailable", "unknown"]
+        },
+        "stop_action": { "type": ["string", "null"] },
+        "restart_action": { "type": ["string", "null"] },
+        "verified": {
+          "type": ["boolean", "null"],
+          "description": "Reported observation; the resolver caller must verify automation state from the owning runtime controls."
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "state": { "enum": ["active", "stopped"] } } },
+          "then": {
+            "properties": {
+              "stop_action": { "type": "string", "minLength": 1 },
+              "restart_action": { "type": "string", "minLength": 1 },
+              "verified": { "const": true }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "state": { "const": "not_installed" } } },
+          "then": {
+            "properties": {
+              "stop_action": { "type": "null" },
+              "restart_action": { "type": "null" },
+              "verified": { "const": true }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "state": { "enum": ["unavailable", "unknown"] } } },
+          "then": { "properties": { "verified": { "const": null } }
+          }
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "action": { "enum": ["resume", "handoff", "stop"] } } },
+      "then": {
+        "properties": {
+          "checkpoint": {
+            "properties": {
+              "state": { "const": "published" },
+              "commit": { "type": "string", "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$" },
+              "issue_ref": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*/[A-Za-z0-9][A-Za-z0-9._-]*#[1-9][0-9]*$" }
+            }
+          }
+        }
+      }
+    }
+  ]
+}
