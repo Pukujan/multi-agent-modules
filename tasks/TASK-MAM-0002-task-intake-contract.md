@@ -72,3 +72,26 @@ Blocked/uncertain:
 
 Next:
 - Publish this design-only checkpoint, then record final acceptance on issue #2 before implementing the resolver.
+
+### 2026-09-27 04:52:45 UTC — /root (Codex project authority)
+
+<!-- continuity:checkpoint {"agent":"/root (Codex project authority)","blocked":["No resolver or property tests yet. Full runtime and three observed fresh-session runs remain outstanding."],"changed":["proposals/0001-task-intake-and-urgent-owner-priority.md, proposals/task-intake.schema.json, tasks/TASK-MAM-0002-task-intake-contract.md, checkpoints/CURRENT.md, HANDOFF.md"],"completed":["Corrected the accepted intake proposal before implementation: the v1.1 schema distinguishes paused goals from stopped scheduled jobs/watchdogs. Added a fail-closed rule for goal state and updated handoff/task projections."],"decisions":["The authority's accepted precedence and safety boundaries remain in force. Schema v1.1 replaces v1 by making goal pause auditable; final v1.1 approval is still required before resolver implementation."],"evidence":["Issue #2 correction comment 5852730090 amends earlier decision 5852705358; continuity preflight=TARGET_VALID; continuity validate=VALID; v1.1 JSON Schema meta-validation, baseline record, and structural rejection cases=PASS."],"next_action":"Push this schema correction, record its receipt, then make the final v1.1 authority decision before coding.","protocol_version":"0.1.0-draft","schema":"project-continuity.checkpoint.v1","task_id":"MAM-0002","timestamp":"2026-09-27T04:52:45Z"} -->
+<!-- continuity:checkpoint-operation {"payload_sha256":"cb30cf869e9ae178033de42c2b6274e3f8adc70b0e0d63e34ae08ace1967ccbf","request_id":"b6f351b6c042457ab5985ffbab24b144","schema":"project-continuity.checkpoint-operation.v1","task_id":"MAM-0002"} -->
+
+Completed:
+- Corrected the accepted intake proposal before implementation: the v1.1 schema distinguishes paused goals from stopped scheduled jobs/watchdogs. Added a fail-closed rule for goal state and updated handoff/task projections.
+
+Evidence:
+- Issue #2 correction comment 5852730090 amends earlier decision 5852705358; continuity preflight=TARGET_VALID; continuity validate=VALID; v1.1 JSON Schema meta-validation, baseline record, and structural rejection cases=PASS.
+
+Decisions:
+- The authority's accepted precedence and safety boundaries remain in force. Schema v1.1 replaces v1 by making goal pause auditable; final v1.1 approval is still required before resolver implementation.
+
+Changed:
+- proposals/0001-task-intake-and-urgent-owner-priority.md, proposals/task-intake.schema.json, tasks/TASK-MAM-0002-task-intake-contract.md, checkpoints/CURRENT.md, HANDOFF.md
+
+Blocked/uncertain:
+- No resolver or property tests yet. Full runtime and three observed fresh-session runs remain outstanding.
+
+Next:
+- Push this schema correction, record its receipt, then make the final v1.1 authority decision before coding.
