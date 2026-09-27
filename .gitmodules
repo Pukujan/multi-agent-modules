@@ -1,0 +1,6 @@
+[submodule "adapters/project-continuity-modules"]
+	path = adapters/project-continuity-modules
+	url = https://github.com/Pukujan/project-continuity-modules.git
+[submodule "adapters/content-generation-modules"]
+	path = adapters/content-generation-modules
+	url = https://github.com/Pukujan/content-generation-modules.git
