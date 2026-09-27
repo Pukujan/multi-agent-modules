@@ -23,13 +23,13 @@ Phase: authoritative task-intake design and policy implementation. The full cold
 - Filed MAM issue #2 and linked JEV issue #94 for the missing strict task-classification and urgent owner-priority policy.
 - The project owner appointed the current local Codex task as project authority for continuation; the appointment and task ownership are recorded on issue #2.
 - Refreshed draft PR #3 and found that it did not require task, role, authorization, automation, or checkpoint state in every intake. A corrected contract is being prepared on the separately owned branch `codex/mam-0002-task-intake-contract`; the Claude-authored branch is unchanged.
-- Created task MAM-0002 for issue #2. The authority accepted corrected schema v1.1 in comment 5852760046, after amending the goal-state model in comment 5852730090. The resolver and property tests are now authorized but not yet implemented.
-- Before implementation delivery, review found v1.1 represented only one prior session. The authority amended issue #2 in comment 5852850796 to require a complete same-lane `replacements` list and schema v1.2. The v1.2 schema is pending final acceptance; the resolver prototype remains uncommitted.
-- The v1.2 schema meta-validation and baseline/negative structural cases pass; PCM preflight/validation and CGM's pinned content-system validation pass. The v1.2 candidate is still awaiting the final authority decision.
+- Created task MAM-0002 for issue #2. The authority accepted corrected schema v1.1 in comment 5852760046, then accepted schema v1.2 with a complete same-lane replacement list in comment 5852903406. The v1.2 resolver and 25 local property/unit checks are implemented; GitHub PR checks remain pending.
+- Resolver review added exact canonical issue-reference matching and requires each claimed goal, scheduled job, and watchdog state/action to match a complete independently observed runtime inventory. Stop/handoff can record prior sessions without producing replacement actions.
+- Local verification passes: 25 resolver/schema tests, Draft 2020-12 schema meta-validation, PCM preflight and continuity validation, issue #2 verification (OPEN), and CGM's pinned content-system validation. GitHub CI has not yet run on this implementation.
 
 ## Active
 
-- MAM-0002: correct and accept the task-intake contract, then implement its deterministic resolver and property checks.
+- MAM-0002: publish a reviewable resolver PR, verify its GitHub checks on the exact revision, and keep issue #2 open until the required three cold starts are observed.
 - MAM-0001 / issue #1 remains open for same-runtime setup, ownership, goal, and watchdog stop reports from the remaining Jev agents.
 
 ## Blockers
@@ -40,4 +40,4 @@ Phase: authoritative task-intake design and policy implementation. The full cold
 
 ## Next atomic action
 
-Validate and accept the v1.2 all-prior-sessions contract on issue #2, then align and verify the resolver. Keep the three-run project acceptance gate open until observed evidence exists.
+Publish the resolver implementation and run its GitHub checks. Keep the three-run project acceptance gate open until observed evidence exists.

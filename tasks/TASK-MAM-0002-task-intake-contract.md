@@ -1,6 +1,6 @@
 # TASK-MAM-0002 — Task Intake Contract
 
-<!-- continuity:task {"acceptance":["The project authority records an accepted precedence order and versioned intake schema on issue #2 before resolver implementation begins.","The schema requires verified target, lane, authority, action, assigned task and role, dependencies, checkpoint state, explicit automation state, and authorization.","A deterministic resolver and property checks prove urgent-owner precedence, fail-closed routing, same-lane replacement, and cross-lane non-interference.","Continuity validation and required repository checks pass on the exact proposed revision.","The issue stays open until the project-wide three fresh-session, multi-device demonstration is observed and recorded; no unobserved cold start is claimed."],"depends_on":[],"goal":"Complete the task-classification and urgent-owner-priority contract required by GitHub issue #2, then implement and verify a small pure resolver without duplicating PCM or claiming the full cold-start runtime is delivered","id":"MAM-0002","issue_url":"https://github.com/Pukujan/multi-agent-modules/issues/2","next_action":"Validate the v1.2 replacement-list contract, record final acceptance on issue #2, then align the resolver prototype and tests with the accepted schema.","owner":"/root (Codex; project authority appointed by owner in current task)","priority":"P1","protocol_version":"0.1.0-draft","schema":"project-continuity.task.v1","status":"active","why":"A fresh session needs deterministic, durable task, role, authority, checkpoint, and automation state so urgent owner stops are honored and one runtime lane cannot terminate another"} -->
+<!-- continuity:task {"acceptance":["The project authority records an accepted precedence order and versioned intake schema on issue #2 before resolver implementation begins.","The schema requires verified target, lane, authority, action, assigned task and role, dependencies, checkpoint state, explicit automation state, and authorization.","A deterministic resolver and property checks prove urgent-owner precedence, fail-closed routing, same-lane replacement, and cross-lane non-interference.","Continuity validation and required repository checks pass on the exact proposed revision.","The issue stays open until the project-wide three fresh-session, multi-device demonstration is observed and recorded; no unobserved cold start is claimed."],"depends_on":[],"goal":"Complete the task-classification and urgent-owner-priority contract required by GitHub issue #2, then implement and verify a small pure resolver without duplicating PCM or claiming the full cold-start runtime is delivered","id":"MAM-0002","issue_url":"https://github.com/Pukujan/multi-agent-modules/issues/2","next_action":"Open a reviewable PR for the resolver and property suite, verify GitHub CI on its exact revision, and keep issue #2 open until the three required cold starts are observed.","owner":"/root (Codex; project authority appointed by owner in current task)","priority":"P1","protocol_version":"0.1.0-draft","schema":"project-continuity.task.v1","status":"active","why":"A fresh session needs deterministic, durable task, role, authority, checkpoint, and automation state so urgent owner stops are honored and one runtime lane cannot terminate another"} -->
 
 - Status: active
 - Owner: `/root` (Codex; project authority appointed by the owner in this task)
@@ -47,15 +47,23 @@ A genuinely new session can recover its repository, task, role, authority, check
 - Corrected the contract to use schema version `mam.task-intake.v1.1`; goals now distinguish `active` and `paused`, while scheduled jobs and watchdogs distinguish `active` and `stopped`.
 - The earlier checkpoint records v1 and the pre-correction proposal. They remain immutable history; the v1.1 correction is tracked by issue comment 5852730090 and this new source revision.
 
-## Progress after v1.1 acceptance
+## Pre-acceptance history (as recorded on issue #2)
 
 - The owner amended the schema before any resolver code was committed so every prior same-lane session assigned to the repository must be listed and verified. Schema version is now v1.2 pending final acceptance.
 - A local resolver prototype exists but is uncommitted and is being realigned to the complete replacement list. No implementation is delivered or authorized until v1.2 acceptance is recorded.
 - The v1.2 schema meta-validates and accepts a complete intake with a replacement list; structural rejection cases for omitted state, invalid version/action, unauthorized cross-lane stop, empty automation, and missing handoff checkpoint pass. PCM preflight/validation and the pinned CGM contract validator also pass. The resolver prototype is stashed locally pending final v1.2 acceptance.
 
+## Progress after v1.2 acceptance
+
+- The authority accepted schema v1.2 at design revision `f971618e1907db25282ade86c995e26a8256ec80` in issue comment 5852903406, requiring a complete list of prior same-lane sessions. The accepted schema is at `schemas/mam/v1/task-intake.schema.json`.
+- Implemented a side-effect-free resolver that checks intake claims against independently verified issue, permission, checkout, checkpoint, automation, and prior-session facts. Dispatch returns the complete intake and verified-facts snapshot; stop/handoff returns a checkpoint-first plan and never closes the task.
+- Added 25 unit/property checks for urgent-owner precedence, self-promotion and impersonation, exact issue binding, scope/priority/dependency authorization, independently matched automation inventory, complete replacement lists, cross-lane isolation, deterministic routing, restored context, and schema enforcement. `python -m unittest discover -s tests` passes all 25 tests locally.
+- Resolver review also confirmed that stop/handoff records may report prior-session inventory without asking to replace those sessions; only start/resume produces a replacement action.
+- Added a CI workflow with the pinned runtime dependency. GitHub CI has not yet run on this branch. The project-level launcher and three fresh-session multi-device runs remain outstanding.
+
 ## Next action
 
-Validate the v1.2 replacement-list contract, record final acceptance on issue #2, then align the resolver prototype and tests with the accepted schema.
+Open a reviewable PR for the resolver and property suite, verify GitHub CI on its exact revision, and keep issue #2 open until the three required cold starts are observed.
 
 ### 2026-09-27 04:42:46 UTC — /root (Codex project authority)
 

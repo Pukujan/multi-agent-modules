@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/Pukujan/multi-agent-modules/schemas/mam/v1/task-intake.schema.json",
   "title": "MAM task intake contract",
-  "description": "Proposed version 1.2 contract for issue #2. Every start, resume, handoff, or stop carries explicit target, ownership, role, checkpoint, automation, and authorization state. Goal pause and scheduled-control stop are distinct. Every prior same-lane session is listed. Values that report observations are claims until matched against separately verified caller facts. Cross-field routing rules are enforced by runtime/task_intake.py, not by JSON Schema alone.",
+  "description": "Accepted version 1.2 contract for issue #2. Every start, resume, handoff, or stop carries explicit target, ownership, role, checkpoint, automation, and authorization state. Goal pause and scheduled-control stop are distinct. Every prior same-lane session is listed. Values that report observations are claims until matched against separately verified caller facts. Cross-field routing rules are enforced by runtime/task_intake.py, not by JSON Schema alone.",
   "type": "object",
   "additionalProperties": false,
   "required": [
