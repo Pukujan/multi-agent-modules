@@ -15,6 +15,6 @@
     "github": true
   },
   "workspace": {
-    "mode": "managed-worktrees"
+    "mode": "single-checkout"
   }
 }

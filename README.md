@@ -10,7 +10,9 @@ This project is meant to make that handoff a repeatable one-command start, backe
 
 ## What counts as the same project
 
-The canonical GitHub repository defines project identity. Codex, OpenAI, Claude Code, Grokbot, Grok agents, or another runtime working in that repository are all working on the same project. When a cold start replaces those sessions, every older session assigned to that repository must checkpoint and stop before any replacement session starts. Different GitHub repositories are different projects, even when the agents or runtime are the same.
+The canonical GitHub repository the agent is working for defines project identity; the agent's launch folder does not. Keep one canonical checkout per device: `D:\claude\<project>` on Windows and `~/Documents/projects/<project>` on the MacBook. PCM already has a private per-device workspace registry and `single-checkout` mode to refuse managed linked worktrees. The bootstrap only needs to resolve the target repo to its existing canonical folder and start the new session there; it should not rebuild PCM's workspace policy or clone a second copy. PCM does not scan drives for unregistered copies, so check the designated path and known registry entries.
+
+Replacement is within the same runtime lane and repository: a new Codex session takes over an older Codex session after it checkpoints and stops. A Claude Code or Grok session must not stop or replace Codex. Different runtime lanes can remain active on the same repo and coordinate through GitHub's task ownership and branch/PR workflow.
 
 ## What this project is
 
@@ -21,11 +23,12 @@ The owner plans to appoint a separate local GPT session as the authoritative own
 ## How it should work
 
 1. The owner gives the coordinator one goal and target GitHub repository.
-2. The starter reads the canonical GitHub issue, current ownership decisions, and the sessions assigned to that repository across runtimes.
-3. Those older sessions publish recoverable checkpoints and stop; replacements do not start until the handoff is complete.
-4. Fresh agents connect on the available devices and receive bounded tasks, roles, and permissions.
-5. Agents coordinate through a small task DAG and durable A2A messages.
-6. Checkpoints go back to GitHub through PCM-governed steps, so a fresh session can resume after interruption.
+2. The starter finds and verifies the one canonical target checkout on this device, then reads the canonical GitHub issue, current ownership decisions, and sessions in the same runtime lane assigned to that repository.
+3. The old same-lane session publishes a recoverable checkpoint and stops; the fresh same-lane replacement starts after handoff. Other runtime lanes are left running.
+4. The fresh session is initialized with the target checkout as its project/workspace and working directory, and loads that repo's own agent instructions and continuity state.
+5. Fresh agents connect on the available devices and receive bounded tasks, roles, and permissions.
+6. Agents coordinate through a small task DAG and durable A2A messages.
+7. Checkpoints go back to GitHub through PCM-governed steps, so a fresh session can resume after interruption.
 
 These are design requirements, not shipped behavior.
 
@@ -33,11 +36,11 @@ These are design requirements, not shipped behavior.
 
 The repository currently contains the charter, setup inventory, PCM continuity metadata, and PCM/CGM as pinned Git submodules. Current agents are posting how they were actually started and how a new process can resume in [issue #1](https://github.com/Pukujan/multi-agent-modules/issues/1).
 
-**No starter script, agent launcher, DAG engine, A2A transport, checkpoint automation, or merge adapter exists yet.** The acceptance target is three successful starts of fresh sessions across multiple devices, including recovery after interruption and a cross-runtime handoff in the same repository. See [PROJECT.md](PROJECT.md) for the exact owner requirements and [HANDOFF.md](HANDOFF.md) for the current resume path.
+**No starter script, agent launcher, DAG engine, A2A transport, checkpoint automation, or merge adapter exists yet.** The acceptance target is three successful fresh starts across multiple devices, including same-runtime takeover, recovery after interruption, and proof that another runtime lane is not stopped. See [PROJECT.md](PROJECT.md) for the exact owner requirements and [HANDOFF.md](HANDOFF.md) for the current resume path.
 
 ## Current next step
 
-Read the setup reports on [issue #1](https://github.com/Pukujan/multi-agent-modules/issues/1). The next design session should be the owner-appointed local GPT session; it should review the actual agent configurations and propose the smallest plan that can pass the three-cold-start acceptance test.
+Read the setup reports on [issue #1](https://github.com/Pukujan/multi-agent-modules/issues/1) and the task-classification/priority requirement in [issue #2](https://github.com/Pukujan/multi-agent-modules/issues/2). The next design session should be the owner-appointed local GPT session; it should review the actual agent configurations and propose the smallest plan that can pass the three-cold-start acceptance test.
 
 ## Helper repositories
 
