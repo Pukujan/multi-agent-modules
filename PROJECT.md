@@ -1,40 +1,48 @@
 # Project charter
 
+<!-- continuity:project {"id":"multi-agent-modules","protocol_version":"0.1.0-draft","schema":"project-continuity.project.v1","title":"multi-agent-modules"} -->
+
 ## Main goal
 
-Provide a reusable cold-start script and prompt for a multi-device, multi-agent runtime. The owner gives one goal to one coordinator; the runtime creates the project workspace and its authoritative GitHub issue plan, assigns agents scoped goals, and gives each agent the current task, ownership, authority, dependencies, and resume instructions.
+Provide one slim cold-start script and prompt for a multi-device, multi-agent runtime. The owner supplies one goal to one coordinator. The runtime starts genuinely new connected sessions on multiple devices, gives each agent its current setup and the right task, role, responsibility, ownership, authorization, dependency context, and recovery instructions, and keeps GitHub as the authoritative project record.
 
-The runtime must support:
+**Project identity is the canonical GitHub repository.** Codex, OpenAI, Claude Code, Grokbot, Grok agents, and other runtime/provider sessions assigned to the same repository are working on the same project, even when their sessions and vendors differ. A cold start for that repository must first checkpoint and stop all older sessions assigned to it across runtimes; only after that handoff may replacement sessions start. Different canonical GitHub repositories are different projects.
 
-- Multiple computers and agents working on one project.
-- Explicit agent roles, task classification, ownership claims, and authorization boundaries.
-- An authoritative adjudication/proposal layer that resolves collisions and contradictions.
-- DAG-based task dependencies, sequencing, retries, and recoverable long-running work.
-- Lightweight agent-to-agent messages with sender, recipient, scope, timestamp, idempotency, and durable references.
-- GitHub issues and pull requests as canonical project state; local databases and continuity records are rebuildable helpers.
-- Automated, idempotent checkpoint pushes and proposal-governed auto-merges through a PCM adapter.
-- Human-facing README, issue, PR, project, and output writing that adapts CGM rather than copying its code.
-- Opaque stable agent/model aliases and available run telemetry, without publishing identity mappings or secrets.
-- Cold starts and recovery from both clean and interrupted processes on another device.
+The intended runtime combines strict agent-role policies, ownership and adjudication, DAG task classification and dependencies, lightweight agent-to-agent communication, durable failure recovery, and checkpoint/push/merge automation governed by PCM. Human-facing project records and outputs adapt CGM. PCM and CGM are referenced as Git submodules; their code is not copied here.
 
-These are owner requirements to design and validate, not claims that the runtime already implements them.
+## Why
 
-## Current scope
+The current runtime coordinates agents and work across computers, but its setup depends on existing sessions and scattered project instructions. A simple, repeatable cold start should let an owner provide a goal once and let fresh agents resume the right work without relying on the original conversation. Runtime/provider boundaries must not split one GitHub repository into separate project identities or allow old and replacement sessions to write concurrently.
 
-This repository has been initialized only. Its first active work is to collect each current agent's actual setup and operating instructions. Runtime architecture and implementation are intentionally not started until that inventory is recorded and the owner or authoritative project process accepts a concrete plan.
+## Scope
 
-## Source and authority rules
+Design and build a lean framework that:
 
-1. GitHub is canonical for goals, issues, proposals, decisions, ownership, checkpoints, PRs, and merges.
-2. The designated authoritative agent decides proposal conflicts; a worker must not infer approval from an issue being open.
-3. Local SQLite, PCM records, and cached boards are continuity aids, never an alternate authority.
-4. Agents report only host, model, temperature, tools, and identity details that are actually observable or explicitly declared. Unknown values remain unavailable.
-5. Never place API keys, environment files, identity maps, or private authentication material in GitHub.
-6. PCM and CGM are upstream helper projects referenced as Git submodules. This repository does not copy their code.
+- Starts from one owner-provided goal and a single launcher invocation.
+- Identifies the target by its canonical GitHub repository and creates fresh agent sessions using each agent's actual current configuration, regardless of runtime/provider.
+- Finds older sessions assigned to that repository across runtimes, requires their recoverable checkpoints and stop acknowledgments, and starts replacement sessions only after the handoff barrier is clear.
+- Assigns bounded responsibilities, permissions, ownership, and DAG dependencies.
+- Uses GitHub issues and pull requests as canonical state, with local state only as a rebuildable aid.
+- Supports lightweight, durable, idempotent A2A messages and checkpoints across devices.
+- Recovers correctly when an agent process or device fails.
+- Uses PCM for continuity/checkpoint coordination and CGM guidance for human-facing documents and outputs.
+- Applies spec-driven, property-driven, and test-driven development while keeping the shipped runtime small.
 
-## Initialization boundary
+## Non-goals for this initialization
 
-Completed: create the GitHub repository, add the two helper submodules, record this charter, and request an inventory of current agent setups and cold-start procedures.
+The launcher, agent spawning/routing, DAG engine, A2A transport, telemetry collector, automated checkpoint pusher, PCM merge adapter, deployment, and benchmarks are not implemented yet. Do not copy PCM or CGM source code into this repository.
 
-Not started: bootstrap script, agent spawning/routing, cross-device transport, DAG engine, A2A protocol implementation, run telemetry implementation, auto-push/merge automation, runtime deployment, and benchmarks.
+## Definition of success
+
+The runtime project passes when a fresh coordinator can repeatedly run the same starter script with one goal and create connected sessions that resume across the project's devices with correct responsibilities and authorization, even after a process failure.
+
+Acceptance requires at least three successful cold starts using new sessions rather than reusing the original running conversations. The cold starts must cover multiple devices and demonstrate recovery after an interrupted process. At least one run must hand off between different runtime/provider types assigned to the same canonical GitHub repository. Every prior session assigned to that repository must checkpoint and stop before replacements start; project identity must not depend on vendor, agent label, or session ID. Each fresh session must recover the canonical GitHub goal, its assigned role/task/scope/authorization, dependencies, current checkpoint, and next action without relying on lost chat state. Record the exact script inputs, device/session aliases, issue refs, pushed checkpoint SHAs, recovery event, and observed outcomes. No secrets or model identity mapping are exposed in those records.
+
+## Authority
+
+The owner will use a separate local GPT session as the authoritative owner for this runtime project. This Codex/Claude session initialized the repository and collected setup reports; it is not the design arbiter. GitHub remains canonical for project scope, proposal decisions, ownership, checkpoints, pull requests, and merges. Workers must follow the authoritative decision and fail closed on unresolved conflicts.
+
+## Current phase
+
+**Initialization and setup inventory only.** Issue [#1](https://github.com/Pukujan/multi-agent-modules/issues/1) asks every current agent to record its real setup, responsibility, observed model/tool telemetry, durable state, and cold-start/recovery procedure. Runtime implementation remains not started until the future authoritative owner reviews that inventory and accepts a slim plan.
 
