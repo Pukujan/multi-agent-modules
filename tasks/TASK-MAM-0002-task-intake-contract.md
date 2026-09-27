@@ -102,3 +102,26 @@ Blocked/uncertain:
 
 Next:
 - Push this schema correction, record its receipt, then make the final v1.1 authority decision before coding.
+
+### 2026-09-27 05:14:48 UTC — /root (Codex project authority)
+
+<!-- continuity:checkpoint {"agent":"/root (Codex project authority)","blocked":["Resolver prototype and property tests are not delivered. Full runtime and three observed fresh-session runs remain outstanding."],"changed":["README.md, HANDOFF.md, PROJECT.md, checkpoints/CURRENT.md, proposals/0001-task-intake-and-urgent-owner-priority.md, schemas/mam/v1/task-intake.schema.json, tasks/TASK-MAM-0002-task-intake-contract.md"],"completed":["Published the corrected task-intake v1.2 design candidate, moved the accepted MAM schema into its namespace, updated the README/current/handoff records, and validated schema shape."],"decisions":["Final acceptance of schema v1.2 is pending. Local resolver prototype is held uncommitted until that decision. Earlier precedence, authorization, and goal-pause/job-stop decisions remain in force."],"evidence":["Issue #2 correction comment 5852850796 requires every prior same-lane session to be represented. v1.2 schema meta-validation, complete baseline, replacement-array example, and negative cases=PASS; continuity preflight=TARGET_VALID; continuity validate=VALID; CGM contract validator=VALID."],"next_action":"Record final acceptance of schema v1.2 on issue #2, then restore and align the resolver prototype.","protocol_version":"0.1.0-draft","schema":"project-continuity.checkpoint.v1","task_id":"MAM-0002","timestamp":"2026-09-27T05:14:48Z"} -->
+<!-- continuity:checkpoint-operation {"payload_sha256":"6f98ce02d2bc73d71e8b9e5c329ca5978407cfc30cf0ab1a80ed727155a7a35b","request_id":"ea9ea120127f474ca3e4c6efbf7f183a","schema":"project-continuity.checkpoint-operation.v1","task_id":"MAM-0002"} -->
+
+Completed:
+- Published the corrected task-intake v1.2 design candidate, moved the accepted MAM schema into its namespace, updated the README/current/handoff records, and validated schema shape.
+
+Evidence:
+- Issue #2 correction comment 5852850796 requires every prior same-lane session to be represented. v1.2 schema meta-validation, complete baseline, replacement-array example, and negative cases=PASS; continuity preflight=TARGET_VALID; continuity validate=VALID; CGM contract validator=VALID.
+
+Decisions:
+- Final acceptance of schema v1.2 is pending. Local resolver prototype is held uncommitted until that decision. Earlier precedence, authorization, and goal-pause/job-stop decisions remain in force.
+
+Changed:
+- README.md, HANDOFF.md, PROJECT.md, checkpoints/CURRENT.md, proposals/0001-task-intake-and-urgent-owner-priority.md, schemas/mam/v1/task-intake.schema.json, tasks/TASK-MAM-0002-task-intake-contract.md
+
+Blocked/uncertain:
+- Resolver prototype and property tests are not delivered. Full runtime and three observed fresh-session runs remain outstanding.
+
+Next:
+- Record final acceptance of schema v1.2 on issue #2, then restore and align the resolver prototype.
