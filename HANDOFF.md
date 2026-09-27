@@ -18,15 +18,15 @@ If the old same-lane session is unreachable, verify its write authority has been
 
 ## Current handoff
 
-This repository is initialized with PCM and CGM as pinned Git submodules and a PCM continuity overlay. The active task is MAM-0001, collecting the current agents' real configuration, responsibilities, authorization, and cold-start/recovery instructions, including same-lane handoff and target checkout discovery.
+This repository is initialized with PCM and CGM as pinned Git submodules and a PCM continuity overlay. The current authoritative task is MAM-0002 on issue #2, designing and implementing the task-intake and urgent-owner-priority contract. The project owner appointed the current Codex task as authority; the appointment, scope, and branch are recorded on issue #2.
 
-The owner will appoint a separate local GPT session as the authoritative owner for runtime design and implementation. This initializer is not that authority. Do not start runtime code until the appointed owner reviews the reports and records an accepted plan in GitHub.
+MAM-0001 / issue #1 remains open for current-agent setup and recovery reports. Its missing reports remain unresolved. The current authority has begun the separate issue #2 contract task while preserving issue #1 as an open inventory task; do not claim the inventory is complete.
 
 Current Jev agents were asked to finish only a safe checkpoint, pause new Jev work, and report their setup on multi-agent-modules issue #1. Refresh those issues before assuming a response or ownership has changed.
 
 The owner also instructed each Jev agent to pause its own Jev goal and any Jev-specific scheduled watchdog it controls after the handoff appears in both repos. Record the goal/job name or ID, verified stopped status, exact stop action, and restart action. On macOS, if installed, the JEV storage-watchdog removal is `scripts/install_watchdog_launchagent.sh --uninstall`; verify the LaunchAgent is unloaded and its plist is removed. Do not stop another provider's session or another project's automation.
 
-MAM issue [#2](https://github.com/Pukujan/multi-agent-modules/issues/2) records the missing strict task-classification and urgent-owner-priority policy. It awaits the future owner-appointed GPT session's decision; implementation has not been authorized.
+For MAM-0002, read the latest issue #2 decision and the task-intake proposal. The precedence order is accepted only in principle; final schema acceptance must be recorded before implementing the resolver. The full launcher/runtime and three fresh-session demonstrations remain outstanding.
 
 ## Recovery
 

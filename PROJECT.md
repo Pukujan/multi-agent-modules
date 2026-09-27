@@ -44,9 +44,9 @@ Acceptance requires at least three successful cold starts using new sessions rat
 
 ## Authority
 
-The owner will use a separate local GPT session as the authoritative owner for this runtime project. This Codex/Claude session initialized the repository and collected setup reports; it is not the design arbiter. GitHub remains canonical for project scope, proposal decisions, ownership, checkpoints, pull requests, and merges. Workers must follow the authoritative decision and fail closed on unresolved conflicts.
+The project owner appointed the current local Codex task as the authoritative agent for this continuation; the appointment is recorded on GitHub issue #2. GitHub remains canonical for project scope, proposal decisions, ownership, checkpoints, pull requests, and merges. Workers must follow the recorded authoritative decision and fail closed on unresolved conflicts. The earlier setup inventory on issue #1 remains open for pending agent reports.
 
 ## Current phase
 
-**Initialization and setup inventory only.** Issue [#1](https://github.com/Pukujan/multi-agent-modules/issues/1) asks every current agent to record its real setup, responsibility, observed model/tool telemetry, durable state, cold-start/recovery procedure, and how it stops its own active goal and repo-specific watchdog. First-class issue [#2](https://github.com/Pukujan/multi-agent-modules/issues/2) records the missing strict task-classification and urgent-owner-priority policy. Runtime implementation remains not started until the future authoritative owner reviews the inventory and records an accepted plan.
+**Authoritative task-intake design and policy implementation.** Issue [#2](https://github.com/Pukujan/multi-agent-modules/issues/2) is the active task for accepting and implementing a strict task-classification and urgent-owner-priority contract. The project still lacks its launcher, session transport, DAG engine, checkpoint automation, and merge adapter. The setup inventory on issue [#1](https://github.com/Pukujan/multi-agent-modules/issues/1) remains open for pending reports and is not silently treated as complete. The project-wide three-fresh-session, multi-device acceptance gate remains outstanding.
 
