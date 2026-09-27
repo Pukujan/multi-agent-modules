@@ -23,7 +23,9 @@ Phase: authoritative task-intake design and policy implementation. The full cold
 - Filed MAM issue #2 and linked JEV issue #94 for the missing strict task-classification and urgent owner-priority policy.
 - The project owner appointed the current local Codex task as project authority for continuation; the appointment and task ownership are recorded on issue #2.
 - Refreshed draft PR #3 and found that it did not require task, role, authorization, automation, or checkpoint state in every intake. A corrected contract is being prepared on the separately owned branch `codex/mam-0002-task-intake-contract`; the Claude-authored branch is unchanged.
-- Created task MAM-0002 for issue #2. The authority accepted the precedence and schema in comment 5852705358, then recorded a pre-implementation correction in comment 5852730090 so goal `paused` state is distinct from stopped jobs/watchdogs. The corrected v1.1 schema awaits a final decision; no resolver or property tests exist yet.
+- Created task MAM-0002 for issue #2. The authority accepted corrected schema v1.1 in comment 5852760046, after amending the goal-state model in comment 5852730090. The resolver and property tests are now authorized but not yet implemented.
+- Before implementation delivery, review found v1.1 represented only one prior session. The authority amended issue #2 in comment 5852850796 to require a complete same-lane `replacements` list and schema v1.2. The v1.2 schema is pending final acceptance; the resolver prototype remains uncommitted.
+- The v1.2 schema meta-validation and baseline/negative structural cases pass; PCM preflight/validation and CGM's pinned content-system validation pass. The v1.2 candidate is still awaiting the final authority decision.
 
 ## Active
 
@@ -38,4 +40,4 @@ Phase: authoritative task-intake design and policy implementation. The full cold
 
 ## Next atomic action
 
-Finish and validate MAM-0002's corrected contract, record final acceptance on issue #2, then implement and test its pure resolver. Keep the three-run project acceptance gate open until observed evidence exists.
+Validate and accept the v1.2 all-prior-sessions contract on issue #2, then align and verify the resolver. Keep the three-run project acceptance gate open until observed evidence exists.

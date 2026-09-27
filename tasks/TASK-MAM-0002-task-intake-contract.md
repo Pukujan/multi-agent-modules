@@ -1,6 +1,6 @@
 # TASK-MAM-0002 — Task Intake Contract
 
-<!-- continuity:task {"acceptance":["The project authority records an accepted precedence order and versioned intake schema on issue #2 before resolver implementation begins.","The schema requires verified target, lane, authority, action, assigned task and role, dependencies, checkpoint state, explicit automation state, and authorization.","A deterministic resolver and property checks prove urgent-owner precedence, fail-closed routing, same-lane replacement, and cross-lane non-interference.","Continuity validation and required repository checks pass on the exact proposed revision.","The issue stays open until the project-wide three fresh-session, multi-device demonstration is observed and recorded; no unobserved cold start is claimed."],"depends_on":[],"goal":"Complete the task-classification and urgent-owner-priority contract required by GitHub issue #2, then implement and verify a small pure resolver without duplicating PCM or claiming the full cold-start runtime is delivered","id":"MAM-0002","issue_url":"https://github.com/Pukujan/multi-agent-modules/issues/2","next_action":"Finish and validate the corrected human contract and JSON Schema, record the final authority decision on issue #2, then implement the resolver and property tests.","owner":"/root (Codex; project authority appointed by owner in current task)","priority":"P1","protocol_version":"0.1.0-draft","schema":"project-continuity.task.v1","status":"active","why":"A fresh session needs deterministic, durable task, role, authority, checkpoint, and automation state so urgent owner stops are honored and one runtime lane cannot terminate another"} -->
+<!-- continuity:task {"acceptance":["The project authority records an accepted precedence order and versioned intake schema on issue #2 before resolver implementation begins.","The schema requires verified target, lane, authority, action, assigned task and role, dependencies, checkpoint state, explicit automation state, and authorization.","A deterministic resolver and property checks prove urgent-owner precedence, fail-closed routing, same-lane replacement, and cross-lane non-interference.","Continuity validation and required repository checks pass on the exact proposed revision.","The issue stays open until the project-wide three fresh-session, multi-device demonstration is observed and recorded; no unobserved cold start is claimed."],"depends_on":[],"goal":"Complete the task-classification and urgent-owner-priority contract required by GitHub issue #2, then implement and verify a small pure resolver without duplicating PCM or claiming the full cold-start runtime is delivered","id":"MAM-0002","issue_url":"https://github.com/Pukujan/multi-agent-modules/issues/2","next_action":"Validate the v1.2 replacement-list contract, record final acceptance on issue #2, then align the resolver prototype and tests with the accepted schema.","owner":"/root (Codex; project authority appointed by owner in current task)","priority":"P1","protocol_version":"0.1.0-draft","schema":"project-continuity.task.v1","status":"active","why":"A fresh session needs deterministic, durable task, role, authority, checkpoint, and automation state so urgent owner stops are honored and one runtime lane cannot terminate another"} -->
 
 - Status: active
 - Owner: `/root` (Codex; project authority appointed by the owner in this task)
@@ -29,7 +29,7 @@ A genuinely new session can recover its repository, task, role, authority, check
 
 - Refreshed GitHub issue #2 and draft PR #3. The proposed precedence table is directionally sound, but its schema did not require task, role, authorization, automation, or checkpoint state; there was no executable resolver or property suite.
 - Recorded the authoritative task owner, branch, initial decision, and correction plan on issue #2 before creating this task projection.
-- The precedence and original v1 schema were accepted in issue comment 5852705358. Before implementation began, a state-model gap was found: goals must be `paused` while jobs/watchdogs are `stopped`. The authority recorded the correction in issue comment 5852730090 and required schema version `mam.task-intake.v1.1`; this corrected version still needs final acceptance.
+- The precedence and original v1 schema were accepted in issue comment 5852705358. Before implementation began, a state-model gap was found: goals must be `paused` while jobs/watchdogs are `stopped`. The authority recorded the correction in issue comment 5852730090 and required schema version `mam.task-intake.v1.1`. The authority accepted corrected v1.1 at revision `868464144c4a552ecd8960c55f16992341ccdb28` in issue comment 5852760046. Resolver review then found the schema could list only one old session; issue comment 5852850796 amends that shape to v1.2 with a complete replacements array. The v1.2 shape is not yet accepted, and local resolver work is uncommitted.
 - PCM `continuity preflight --root .` reported `TARGET_VALID`; `continuity validate --root .` reported `VALID`; issue verification confirmed MAM-0001 is open and MAM-0002/#2 is open. Draft 2020-12 schema meta-validation, one complete baseline record, and structural rejection cases for omitted automation, cross-lane stop authority, empty automation state, handoff without a published checkpoint, and an unknown version passed. No resolver or property tests have yet been implemented.
 
 ## Evidence and decisions
@@ -38,6 +38,7 @@ A genuinely new session can recover its repository, task, role, authority, check
 - Existing draft proposal: https://github.com/Pukujan/multi-agent-modules/pull/3, source revision `45410fd6596849acd7326a23bf04eab3ba185b56`
 - Initial authority and task checkpoint: https://github.com/Pukujan/multi-agent-modules/issues/2#issuecomment-5852589102
 - Initial design acceptance and subsequent pre-implementation state correction: https://github.com/Pukujan/multi-agent-modules/issues/2#issuecomment-5852705358 and https://github.com/Pukujan/multi-agent-modules/issues/2#issuecomment-5852730090
+- Corrected schema v1.1 acceptance: https://github.com/Pukujan/multi-agent-modules/issues/2#issuecomment-5852760046
 - Branch: `codex/mam-0002-task-intake-contract`, based on the reviewed draft branch without modifying it.
 - Branch protection was not configured for `main` at the time checked. Pull request checks still must be inspected on the final revision; absent checks cannot be described as passing.
 
@@ -46,9 +47,15 @@ A genuinely new session can recover its repository, task, role, authority, check
 - Corrected the contract to use schema version `mam.task-intake.v1.1`; goals now distinguish `active` and `paused`, while scheduled jobs and watchdogs distinguish `active` and `stopped`.
 - The earlier checkpoint records v1 and the pre-correction proposal. They remain immutable history; the v1.1 correction is tracked by issue comment 5852730090 and this new source revision.
 
+## Progress after v1.1 acceptance
+
+- The owner amended the schema before any resolver code was committed so every prior same-lane session assigned to the repository must be listed and verified. Schema version is now v1.2 pending final acceptance.
+- A local resolver prototype exists but is uncommitted and is being realigned to the complete replacement list. No implementation is delivered or authorized until v1.2 acceptance is recorded.
+- The v1.2 schema meta-validates and accepts a complete intake with a replacement list; structural rejection cases for omitted state, invalid version/action, unauthorized cross-lane stop, empty automation, and missing handoff checkpoint pass. PCM preflight/validation and the pinned CGM contract validator also pass. The resolver prototype is stashed locally pending final v1.2 acceptance.
+
 ## Next action
 
-Validate the v1.1 schema and human contract, record final acceptance on issue #2, then implement and test the resolver.
+Validate the v1.2 replacement-list contract, record final acceptance on issue #2, then align the resolver prototype and tests with the accepted schema.
 
 ### 2026-09-27 04:42:46 UTC — /root (Codex project authority)
 

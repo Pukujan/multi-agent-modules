@@ -40,7 +40,7 @@ The repository currently contains the charter, setup inventory, PCM continuity m
 
 ## Current next step
 
-Read the setup reports on [issue #1](https://github.com/Pukujan/multi-agent-modules/issues/1) and the task-classification/priority requirement in [issue #2](https://github.com/Pukujan/multi-agent-modules/issues/2). The next design session should be the owner-appointed local GPT session; it should review the actual agent configurations and propose the smallest plan that can pass the three-cold-start acceptance test.
+The project owner appointed this local Codex task as the authority for task-intake design. After accepting the initial contract, it amended the replacement record to account for every older session in the same provider lane; the v1.2 decision is pending on [issue #2](https://github.com/Pukujan/multi-agent-modules/issues/2#issuecomment-5852850796). The setup inventory remains open on [issue #1](https://github.com/Pukujan/multi-agent-modules/issues/1), and the three fresh-session, multi-device demonstrations are still outstanding.
 
 ## Helper repositories
 

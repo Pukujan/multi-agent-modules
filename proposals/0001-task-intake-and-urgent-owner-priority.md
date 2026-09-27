@@ -1,6 +1,6 @@
 # Task intake and urgent-owner priority
 
-**Status:** proposed v1.1 contract; awaiting the corrected decision recorded on issue #2.
+**Status:** corrected v1.2 candidate; pending final acceptance on issue #2 before resolver implementation.
 **Leaf issue:** [#2](https://github.com/Pukujan/multi-agent-modules/issues/2); parent: none; task: MAM-0002.
 **Decision authority:** `/root` (Codex, appointed by the project owner in this task).
 **Scope:** define the intake and deterministic routing contract. This document does not authorize a full launcher, agent transport, task DAG, or checkpoint service.
@@ -28,14 +28,14 @@ An urgent owner stop still requires a recoverable checkpoint before the agent st
 
 ## Intake record
 
-The proposed JSON Schema is [`task-intake.schema.json`](task-intake.schema.json). It uses JSON Schema 2020-12 and pins `schema_version` to `mam.task-intake.v1.1`. Unknown versions are refused; the resolver never guesses a migration.
+The corrected JSON Schema is [`task-intake.schema.json`](../schemas/mam/v1/task-intake.schema.json). It uses JSON Schema 2020-12 and pins `schema_version` to `mam.task-intake.v1.2`. Unknown versions are refused; the resolver never guesses a migration. Issue comment [#5852850796](https://github.com/Pukujan/multi-agent-modules/issues/2#issuecomment-5852850796) records the pre-implementation correction from one replacement to an explicit list of every prior same-lane session.
 
 Every record includes:
 
 | Field | Required facts |
 | --- | --- |
 | `target` | Canonical `owner/repo`, verified origin remote, canonical-checkout status, and issue reference |
-| `lane` | Provider lane, stable agent alias, and explicit replacement evidence or `null` |
+| `lane` | Provider lane, stable agent alias, and `replacements` listing every older same-lane session assigned to this repository; an empty list means none |
 | `requester` | Authority, recorded delegation reference when applicable, and urgency claim |
 | `action` | `start`, `resume`, `handoff`, or `stop` |
 | `task` | Issue owner, recipient owner, role, bounded scope, base priority, and dependencies (an empty list explicitly means none) |
@@ -53,7 +53,7 @@ The resolver processes a record in this order:
 2. Verify the target remote and require `checkout_role: canonical`. The resolver receives those observations from the checkout/PCM caller; an unverified remote, collision, or unresolved checkout routes to the project authority. Do not clone or dispatch.
 3. Require known requester authority, a recorded and verified delegation for an urgent delegate, and matching issue, task, and lane ownership. The caller supplies the authenticated requester authority and canonical issue owner from GitHub. Unclear, unverified, or conflicting ownership routes to the project authority.
 4. Require every dependency to appear in the caller's set of dependencies verified complete in GitHub. An unverified or incomplete dependency routes to the project authority.
-5. For a replacement, require the previous session to belong to this same provider lane and canonical repository, with a published checkpoint and verified stop. The caller independently verifies the handoff evidence. If the previous session is unreachable, write authority must also be verified as fenced. Cross-lane replacement is rejected; the resolver never produces a stop action for another lane.
+5. Compare the intake's replacement list with the caller's complete list of older sessions in this provider lane assigned to this canonical repository. Require a published checkpoint and verified stop for every session. If any prior session is unreachable, its write authority must also be verified as fenced. Missing, extra, or cross-provider entries fail closed; the resolver never produces a stop action for another lane.
 6. Resolve priority: an authorized urgent owner request becomes `urgent_owner`; otherwise use the task's GitHub priority P0–P3. A worker urgency claim leaves ordinary priority unchanged.
 7. For `start` or `resume`, return a dispatch decision only if all prior checks pass. For `stop` or `handoff`, return an ordered plan to checkpoint, publish the handoff, pause the recipient's active goal, stop and verify the recipient's own active jobs/watchdogs, record restart actions, and then stop. A fresh start cannot proceed while a goal remains active or paused; a resume may take over only a verified stopped prior session and a non-active goal. The plan leaves the GitHub task open.
 
@@ -84,7 +84,7 @@ Text equivalent: validate; resolve authority and ownership; verify target and de
 - **Two possible checkouts exist:** preserve both and route the collision for resolution; never delete or clone to make the ambiguity disappear.
 - **An owner instruction supersedes an authority decision:** the owner instruction wins within the level-0 and lane boundaries. Record the supersession on the issue before dependent work proceeds.
 - **A different provider appears to block progress:** never stop or replace it. Resolve work through issue ownership, separate branches, and pull requests.
-- **A prior same-lane session is unreachable:** do not dispatch unless its checkpoint is recoverable, its stop is verified, and its write authority is fenced.
+- **A prior same-lane session is unreachable:** do not dispatch unless every prior session has a recoverable checkpoint and verified stop, and the unreachable session's write authority is fenced.
 
 ## PCM boundary
 
@@ -100,6 +100,7 @@ The resolver implementation must make these properties executable:
 | Worker cannot promote its own work | `urgent: true` from a worker leaves P0–P3 unchanged |
 | A worker cannot impersonate an owner in the intake record | An `owner` claim contradicted by the caller's authenticated GitHub authority yields no urgent priority or dispatch |
 | Other runtime lanes are not stopped or replaced | Cross-lane replacement is refused and the stop plan contains only the recipient's own controls |
+| Every prior same-lane session is accounted for | Omitting one discovered session from the replacement list yields no dispatch |
 | Routing is deterministic | Repeated resolution and reordered input collections produce identical decisions |
 | Ambiguous state fails closed | Invalid remote, checkout collision, unknown authority, owner mismatch, incomplete dependency, missing checkpoint, or unverified stop yields no dispatch |
 | Automation absence is explicit | Empty arrays or unknown/unavailable states cannot yield dispatch |
