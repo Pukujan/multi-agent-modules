@@ -133,3 +133,29 @@ Blocked/uncertain:
 
 Next:
 - Record final acceptance of schema v1.2 on issue #2, then restore and align the resolver prototype.
+
+### 2026-09-27 05:43:30 UTC — /root (Codex project authority)
+
+<!-- continuity:checkpoint {"agent":"/root (Codex project authority)","blocked":[],"changed":["runtime/task_intake.py, tests/test_task_intake.py, requirements.txt, .github/workflows/task-intake.yml, schemas/mam/v1/task-intake.schema.json, proposals/0001-task-intake-and-urgent-owner-priority.md, HANDOFF.md, README.md, checkpoints/CURRENT.md, tasks/TASK-MAM-0002-task-intake-contract.md"],"completed":["Implemented the pure, side-effect-free v1.2 intake resolver and 25 schema/resolver checks.","Updated the proposal, handoff, README, and current/task projections to reflect accepted schema v1.2 and implementation state.","Added a GitHub Actions workflow for the resolver suite."],"decisions":["Caller-verified issue identity and a complete automation inventory are mandatory; intake claims alone cannot authenticate issue number or goal/job/watchdog state. Urgent owner stop bypasses ordinary priority/dependency gating but does not close work or affect other provider lanes."],"evidence":["Local tests: 25 passed; JSON Schema Draft 2020-12 meta-validation: PASS; PCM preflight: TARGET_VALID; continuity validate: VALID; CGM contract validation: VALID.","GitHub issue #2 remains OPEN. GitHub CI has not run yet on this implementation; main has no branch-protection rule; three fresh-session multi-device demonstrations remain outstanding."],"next_action":"Open a reviewable pull request, verify GitHub checks on its exact revision, and keep issue #2 open until three fresh-session multi-device runs are observed and recorded.","protocol_version":"0.1.0-draft","schema":"project-continuity.checkpoint.v1","task_id":"MAM-0002","timestamp":"2026-09-27T05:43:30Z"} -->
+<!-- continuity:checkpoint-operation {"payload_sha256":"944805e57cbac2e9cd44e61a16669822fae5945a04062202a41b78fd70602307","request_id":"666f83b3fc554f89bff392278434199d","schema":"project-continuity.checkpoint-operation.v1","task_id":"MAM-0002"} -->
+
+Completed:
+- Implemented the pure, side-effect-free v1.2 intake resolver and 25 schema/resolver checks.
+- Updated the proposal, handoff, README, and current/task projections to reflect accepted schema v1.2 and implementation state.
+- Added a GitHub Actions workflow for the resolver suite.
+
+Evidence:
+- Local tests: 25 passed; JSON Schema Draft 2020-12 meta-validation: PASS; PCM preflight: TARGET_VALID; continuity validate: VALID; CGM contract validation: VALID.
+- GitHub issue #2 remains OPEN. GitHub CI has not run yet on this implementation; main has no branch-protection rule; three fresh-session multi-device demonstrations remain outstanding.
+
+Decisions:
+- Caller-verified issue identity and a complete automation inventory are mandatory; intake claims alone cannot authenticate issue number or goal/job/watchdog state. Urgent owner stop bypasses ordinary priority/dependency gating but does not close work or affect other provider lanes.
+
+Changed:
+- runtime/task_intake.py, tests/test_task_intake.py, requirements.txt, .github/workflows/task-intake.yml, schemas/mam/v1/task-intake.schema.json, proposals/0001-task-intake-and-urgent-owner-priority.md, HANDOFF.md, README.md, checkpoints/CURRENT.md, tasks/TASK-MAM-0002-task-intake-contract.md
+
+Blocked/uncertain:
+- none
+
+Next:
+- Open a reviewable pull request, verify GitHub checks on its exact revision, and keep issue #2 open until three fresh-session multi-device runs are observed and recorded.
