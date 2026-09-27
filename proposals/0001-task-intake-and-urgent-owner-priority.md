@@ -1,6 +1,6 @@
 # Task intake and urgent-owner priority
 
-**Status:** proposed v1 contract; awaiting the decision recorded on issue #2.
+**Status:** proposed v1.1 contract; awaiting the corrected decision recorded on issue #2.
 **Leaf issue:** [#2](https://github.com/Pukujan/multi-agent-modules/issues/2); parent: none; task: MAM-0002.
 **Decision authority:** `/root` (Codex, appointed by the project owner in this task).
 **Scope:** define the intake and deterministic routing contract. This document does not authorize a full launcher, agent transport, task DAG, or checkpoint service.
@@ -28,7 +28,7 @@ An urgent owner stop still requires a recoverable checkpoint before the agent st
 
 ## Intake record
 
-The proposed JSON Schema is [`task-intake.schema.json`](task-intake.schema.json). It uses JSON Schema 2020-12 and pins `schema_version` to `mam.task-intake.v1`. Unknown versions are refused; the resolver never guesses a migration.
+The proposed JSON Schema is [`task-intake.schema.json`](task-intake.schema.json). It uses JSON Schema 2020-12 and pins `schema_version` to `mam.task-intake.v1.1`. Unknown versions are refused; the resolver never guesses a migration.
 
 Every record includes:
 
@@ -43,7 +43,7 @@ Every record includes:
 | `automation` | At least one explicit state for the recipient's goals, scheduled jobs, and watchdogs. Use a verified `not_installed` entry when a category has no controls |
 | `authorization` | Repository-write and self-automation authority; `may_stop_other_lanes` is always false |
 
-Automation states are `active`, `stopped`, `not_installed`, `unavailable`, or `unknown`. `active` and `stopped` records include exact stop and restart actions. `not_installed` is explicitly verified. `unavailable` or `unknown` is recorded honestly and causes fail-closed routing until the state is known.
+Goal states distinguish `active` from `paused`; scheduled-job and watchdog states distinguish `active` from `stopped`. Each record includes exact pause/stop and restart actions. `not_installed` is explicitly verified. `unavailable` or `unknown` is recorded honestly and causes fail-closed routing until the state is known. After a handoff or stop plan runs, the goal must be recorded as paused and the recipient's active jobs/watchdogs as stopped.
 
 ## Deterministic routing
 
@@ -55,7 +55,7 @@ The resolver processes a record in this order:
 4. Require every dependency to appear in the caller's set of dependencies verified complete in GitHub. An unverified or incomplete dependency routes to the project authority.
 5. For a replacement, require the previous session to belong to this same provider lane and canonical repository, with a published checkpoint and verified stop. The caller independently verifies the handoff evidence. If the previous session is unreachable, write authority must also be verified as fenced. Cross-lane replacement is rejected; the resolver never produces a stop action for another lane.
 6. Resolve priority: an authorized urgent owner request becomes `urgent_owner`; otherwise use the task's GitHub priority P0–P3. A worker urgency claim leaves ordinary priority unchanged.
-7. For `start` or `resume`, return a dispatch decision only if all prior checks pass. For `stop` or `handoff`, return an ordered plan to checkpoint, publish the handoff, pause the recipient's active goal, stop and verify the recipient's own active jobs/watchdogs, record restart actions, and then stop. The plan leaves the GitHub task open.
+7. For `start` or `resume`, return a dispatch decision only if all prior checks pass. For `stop` or `handoff`, return an ordered plan to checkpoint, publish the handoff, pause the recipient's active goal, stop and verify the recipient's own active jobs/watchdogs, record restart actions, and then stop. A fresh start cannot proceed while a goal remains active or paused; a resume may take over only a verified stopped prior session and a non-active goal. The plan leaves the GitHub task open.
 
 The resolver returns a decision and a plan; it performs no external actions. It requires a separately supplied verified-facts context for the remote/checkout observation, authenticated requester authority and delegation, canonical issue owner, completed dependencies, checkpoint publication, replacement stop/fence, and observed automation states. Matching fields inside the JSON record are claims until compared with that context. Missing or contradictory evidence fails closed. A caller must execute the returned plan through authorized PCM/GitHub operations and verify each result. An unresolved decision has no dispatch plan and names the reason. A refused schema record is distinct from a valid-but-unresolved record.
 
@@ -103,6 +103,7 @@ The resolver implementation must make these properties executable:
 | Routing is deterministic | Repeated resolution and reordered input collections produce identical decisions |
 | Ambiguous state fails closed | Invalid remote, checkout collision, unknown authority, owner mismatch, incomplete dependency, missing checkpoint, or unverified stop yields no dispatch |
 | Automation absence is explicit | Empty arrays or unknown/unavailable states cannot yield dispatch |
+| A goal pause is distinguishable from stopping a watchdog | Goal records use `paused`; scheduled-job and watchdog records use `stopped` |
 | A stop does not close work | The returned plan explicitly leaves issue status unchanged |
 
 Schema tests separately verify the draft-2020-12 meta-schema and reject an unsupported version, missing required state, invalid action, `may_stop_other_lanes: true`, and an automation entry without required state/actions. The JSON Schema validates shape, not authenticity; resolver tests supply trusted facts separately and prove that a record cannot promote itself by asserting `remote_verified`, `authority: owner`, or `verified: true` without matching observations.

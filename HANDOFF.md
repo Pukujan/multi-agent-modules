@@ -26,7 +26,7 @@ Current Jev agents were asked to finish only a safe checkpoint, pause new Jev wo
 
 The owner also instructed each Jev agent to pause its own Jev goal and any Jev-specific scheduled watchdog it controls after the handoff appears in both repos. Record the goal/job name or ID, verified stopped status, exact stop action, and restart action. On macOS, if installed, the JEV storage-watchdog removal is `scripts/install_watchdog_launchagent.sh --uninstall`; verify the LaunchAgent is unloaded and its plist is removed. Do not stop another provider's session or another project's automation.
 
-For MAM-0002, read the latest issue #2 decision and the task-intake proposal. The precedence order is accepted only in principle; final schema acceptance must be recorded before implementing the resolver. The full launcher/runtime and three fresh-session demonstrations remain outstanding.
+For MAM-0002, read the latest issue #2 decision and the task-intake proposal. The authority accepted v1, then recorded a correction requiring v1.1 to distinguish paused goals from stopped jobs/watchdogs before implementation. Verify the current accepted schema version on issue #2 before adding resolver code. The full launcher/runtime and three fresh-session demonstrations remain outstanding.
 
 ## Recovery
 

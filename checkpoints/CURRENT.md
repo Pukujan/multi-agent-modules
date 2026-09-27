@@ -23,7 +23,7 @@ Phase: authoritative task-intake design and policy implementation. The full cold
 - Filed MAM issue #2 and linked JEV issue #94 for the missing strict task-classification and urgent owner-priority policy.
 - The project owner appointed the current local Codex task as project authority for continuation; the appointment and task ownership are recorded on issue #2.
 - Refreshed draft PR #3 and found that it did not require task, role, authorization, automation, or checkpoint state in every intake. A corrected contract is being prepared on the separately owned branch `codex/mam-0002-task-intake-contract`; the Claude-authored branch is unchanged.
-- Created task MAM-0002 for issue #2. Its precedence order is accepted in principle for correction; the schema has not yet received final acceptance. No resolver or property tests exist yet.
+- Created task MAM-0002 for issue #2. The authority accepted the precedence and schema in comment 5852705358, then recorded a pre-implementation correction in comment 5852730090 so goal `paused` state is distinct from stopped jobs/watchdogs. The corrected v1.1 schema awaits a final decision; no resolver or property tests exist yet.
 
 ## Active
 

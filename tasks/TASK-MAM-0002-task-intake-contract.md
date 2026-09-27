@@ -29,7 +29,7 @@ A genuinely new session can recover its repository, task, role, authority, check
 
 - Refreshed GitHub issue #2 and draft PR #3. The proposed precedence table is directionally sound, but its schema did not require task, role, authorization, automation, or checkpoint state; there was no executable resolver or property suite.
 - Recorded the authoritative task owner, branch, initial decision, and correction plan on issue #2 before creating this task projection.
-- The precedence policy is accepted in principle for correction; the schema remains unaccepted until it carries all required cold-start state.
+- The precedence and original v1 schema were accepted in issue comment 5852705358. Before implementation began, a state-model gap was found: goals must be `paused` while jobs/watchdogs are `stopped`. The authority recorded the correction in issue comment 5852730090 and required schema version `mam.task-intake.v1.1`; this corrected version still needs final acceptance.
 - PCM `continuity preflight --root .` reported `TARGET_VALID`; `continuity validate --root .` reported `VALID`; issue verification confirmed MAM-0001 is open and MAM-0002/#2 is open. Draft 2020-12 schema meta-validation, one complete baseline record, and structural rejection cases for omitted automation, cross-lane stop authority, empty automation state, handoff without a published checkpoint, and an unknown version passed. No resolver or property tests have yet been implemented.
 
 ## Evidence and decisions
@@ -37,12 +37,18 @@ A genuinely new session can recover its repository, task, role, authority, check
 - Canonical leaf: https://github.com/Pukujan/multi-agent-modules/issues/2
 - Existing draft proposal: https://github.com/Pukujan/multi-agent-modules/pull/3, source revision `45410fd6596849acd7326a23bf04eab3ba185b56`
 - Initial authority and task checkpoint: https://github.com/Pukujan/multi-agent-modules/issues/2#issuecomment-5852589102
+- Initial design acceptance and subsequent pre-implementation state correction: https://github.com/Pukujan/multi-agent-modules/issues/2#issuecomment-5852705358 and https://github.com/Pukujan/multi-agent-modules/issues/2#issuecomment-5852730090
 - Branch: `codex/mam-0002-task-intake-contract`, based on the reviewed draft branch without modifying it.
 - Branch protection was not configured for `main` at the time checked. Pull request checks still must be inspected on the final revision; absent checks cannot be described as passing.
 
+## Progress after the first checkpoint
+
+- Corrected the contract to use schema version `mam.task-intake.v1.1`; goals now distinguish `active` and `paused`, while scheduled jobs and watchdogs distinguish `active` and `stopped`.
+- The earlier checkpoint records v1 and the pre-correction proposal. They remain immutable history; the v1.1 correction is tracked by issue comment 5852730090 and this new source revision.
+
 ## Next action
 
-Complete the corrected schema and human contract, validate them, record final acceptance on issue #2, then implement and test the resolver.
+Validate the v1.1 schema and human contract, record final acceptance on issue #2, then implement and test the resolver.
 
 ### 2026-09-27 04:42:46 UTC — /root (Codex project authority)
 
