@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Pukujan/multi-agent-modules/proposals/task-intake.schema.json",
+  "title": "MAM task intake contract",
+  "description": "DRAFT PROPOSAL, version 0.1.0-draft, for the cold-start intake record required by issue #2. Not accepted and not authoritative. The owner-appointed local GPT session is the design arbiter for this repository and may accept, amend, or reject this shape. Field names are deliberately plain and stable so that a cold-start bootstrap can emit the record without interpreting it.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "intake_id",
+    "recorded_at",
+    "target",
+    "lane",
+    "requester",
+    "action",
+    "priority",
+    "unresolved"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "mam.task-intake.v0-draft",
+      "description": "Pins the contract. A cold-start bootstrap must refuse a record whose version it does not implement rather than guess."
+    },
+    "intake_id": {
+      "type": "string",
+      "pattern": "^intake:[a-z0-9][a-z0-9._-]{0,127}$",
+      "description": "Stable identifier for this intake, so a retried cold start is idempotent rather than a second dispatch."
+    },
+    "recorded_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the intake was recorded, in UTC with an explicit offset."
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["canonical_repo", "remote_verified", "checkout_role"],
+      "description": "What project the work belongs to. Project identity is the canonical GitHub repository, never the folder the runtime started in.",
+      "properties": {
+        "canonical_repo": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*/[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "description": "owner/name of the canonical GitHub repository."
+        },
+        "remote_verified": {
+          "type": "boolean",
+          "description": "True only when the checkout's origin remote was actually compared against canonical_repo. A false value is a fail-closed condition, not a warning."
+        },
+        "checkout_role": {
+          "enum": ["canonical", "collision", "unresolved"],
+          "description": "canonical: one unambiguous checkout for this device. collision: more than one plausible copy, or an uncommitted state that cannot be attributed. unresolved: could not be determined. collision and unresolved both fail closed."
+        },
+        "issue_ref": {
+          "type": ["string", "null"],
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*/[A-Za-z0-9][A-Za-z0-9._-]*#[1-9][0-9]*$",
+          "description": "owner/name#number of the issue that authorizes the work, or null when no issue backs it."
+        }
+      }
+    },
+    "lane": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "agent_alias"],
+      "description": "The runtime/provider lane and the agent identity within it. Replacement is scoped to this pair plus target.canonical_repo.",
+      "properties": {
+        "provider": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Runtime or provider family, for example the Codex, Claude Code, Grok Bot/Cursor, or OMP lane."
+        },
+        "agent_alias": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The alias this session publishes in GitHub records."
+        },
+        "replaces_agent_alias": {
+          "type": ["string", "null"],
+          "description": "The same-lane alias this session takes over from, or null for a fresh start. Only legal when the replaced session's lane and canonical repo both match this record and its checkpoint and stop are verified. See rules R5 and R6 in the proposal."
+        }
+      }
+    },
+    "requester": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authority"],
+      "description": "Who asked for the work, and whether that ask can outrank ordinary priority.",
+      "properties": {
+        "authority": {
+          "enum": ["owner", "owner_delegate", "arbiter", "worker", "unknown"],
+          "description": "Only owner, and owner_delegate with a recorded delegation, can produce urgent_owner priority. worker and unknown can never raise priority. unknown fails closed."
+        },
+        "delegation_recorded": {
+          "type": "boolean",
+          "description": "Required true for authority=owner_delegate to be treated as urgent-capable."
+        },
+        "urgent": {
+          "type": "boolean",
+          "description": "The requester marked the instruction urgent. Self-declared urgency by a worker is ignored; see rule R2."
+        }
+      }
+    },
+    "action": {
+      "enum": ["start", "resume", "handoff", "stop"],
+      "description": "What the recipient is being asked to do. stop and handoff carry the checkpoint obligations in the proposal's section 6."
+    },
+    "priority": {
+      "enum": ["urgent_owner", "P0", "P1", "P2", "P3"],
+      "description": "The resolved priority, after applying the precedence order. urgent_owner is produced only by an authorized owner instruction; it is never self-assigned."
+    },
+    "task": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["owner_agent_alias", "scope"],
+      "description": "The existing issue owner and scope, when the work is issue-backed.",
+      "properties": {
+        "issue_owner_agent_alias": {
+          "type": ["string", "null"],
+          "description": "The alias GitHub records as owning the issue, when one is recorded."
+        },
+        "owner_agent_alias": {
+          "type": ["string", "null"],
+          "description": "The alias the recipient would own the work under. Null means the recipient must not write until ownership is resolved."
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The bounded scope of what the recipient may change."
+        },
+        "depends_on": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true,
+          "description": "Issue refs or task ids that must complete first. A non-empty list the recipient cannot verify as satisfied fails closed."
+        }
+      }
+    },
+    "automation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["goals", "scheduled_jobs", "watchdogs"],
+      "description": "The recipient's own repo-specific automation, recorded so a stop is verifiable and a resume is possible. Absence must be stated as not_installed rather than left empty.",
+      "properties": {
+        "goals": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/automationItem" }
+        },
+        "scheduled_jobs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/automationItem" }
+        },
+        "watchdogs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/automationItem" }
+        }
+      }
+    },
+    "authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["may_write_repo", "may_stop_own_automation", "may_stop_other_lanes"],
+      "description": "The authorization boundary the recipient operates under. The cross-vendor non-interference rule is encoded here as a constant so a conforming record cannot claim authority to stop another lane.",
+      "properties": {
+        "may_write_repo": { "type": "boolean" },
+        "may_stop_own_automation": { "type": "boolean" },
+        "may_stop_other_lanes": {
+          "const": false,
+          "description": "Always false. A session may never stop or replace a session in a different runtime/provider lane, whatever its own authority."
+        }
+      }
+    },
+    "unresolved": {
+      "type": "boolean",
+      "description": "True when any fail-closed condition applies: unverified remote, collided or unresolved checkout, unknown requester authority, unresolved ownership, or unverifiable dependencies. A true value means the runtime must not act and must route to the arbiter."
+    },
+    "unresolved_reason": {
+      "type": ["string", "null"],
+      "description": "Plain-language reason, required in practice when unresolved is true."
+    }
+  },
+  "$defs": {
+    "automationItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "state"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Goal name or job/watchdog identifier, in plain words rather than a private path."
+        },
+        "state": {
+          "enum": ["active", "stopped", "not_installed", "unavailable", "unknown"],
+          "description": "not_installed means the control does not exist on this host. unavailable means it may exist but this session cannot observe or control it. unknown fails closed for a stop action."
+        },
+        "stop_action": {
+          "type": ["string", "null"],
+          "description": "The exact action that stops it."
+        },
+        "restart_action": {
+          "type": ["string", "null"],
+          "description": "The exact action that restarts it."
+        },
+        "verified": {
+          "type": ["boolean", "null"],
+          "description": "True only when the stopped or absent state was actually observed. Null when no verification was possible."
+        }
+      }
+    }
+  }
+}
